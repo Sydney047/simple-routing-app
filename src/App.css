@@ -74,6 +74,9 @@ input {
   #root {
     margin: 2ch;
   }
+  .searchResults {
+    grid-gap: 1ch;
+  }
   .searchResults header img, header svg, header p{
     display: none;
   }
