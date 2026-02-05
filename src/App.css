@@ -16,6 +16,7 @@
   border-bottom: solid 3px black;
   border-radius: 1rem;
   margin-bottom: 3ch;
+  margin-top: 3ch;
   /* background-color: rgb(185, 219, 255, .6); */
 }
 .header img {
@@ -26,7 +27,7 @@
 }
 .searchResults {
   display: grid;
-  grid-template: 10ch 20ch 10ch / 1fr 2fr 1fr;
+  grid-template: 10ch 20ch 15ch / 1fr 2fr 1fr;
 }
 .searchResults header {
   grid-column: 1 / -1 ;
@@ -73,12 +74,14 @@ input {
   #root {
     margin: 2ch;
   }
-  header img {
-    height: 5ch;
-    width: 5ch;
+  .searchResults header img, header svg, header p{
+    display: none;
   }
   .team img {
     height: 10ch;
     width: 10ch;
+  }
+  .away {
+    margin-bottom: 10px ;
   }
 }
