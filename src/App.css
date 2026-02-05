@@ -77,9 +77,6 @@ input {
   .searchResults header img, header svg, header p{
     display: none;
   }
-  .scores {
-    margin-right: 1ch;
-  }
   .team img {
     height: 9ch;
     width: 9ch;
