@@ -2,12 +2,9 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router";
 
 export default function PostMatches ( { match = "Arsenal vs Chelsea" } ) {
+    const [ error, setError ] = useState( null );
+    const [ loading, setLoading ] = useState( true );
     const [ game, setGame ] = useState( '' );
-    const [ error, setError ] = useState( false );
-
-    function handleError() {
-        setError( !error );
-    }
 
     function splitInput () {
         const splittedMatch = match.split( 'vs' );
@@ -15,27 +12,26 @@ export default function PostMatches ( { match = "Arsenal vs Chelsea" } ) {
     }
 
     useEffect( ()=>{
-      // we are going to add loading here
       const input = splitInput()
 
       const url = 'https://www.thesportsdb.com/api/v1/json/123/searchevents.php?e=' + input[0] + 'vs' + input[1];
 
       async function fetchData() {
         try {
-            const response = await fetch( url );
+            const response = await ( await fetch( url ) ).json();
+
             if ( ! response.ok ) {
-                console.log( "Something went wrong" );
-                handleError();
-            } else {
-                const data = await response.json();
-                console.log( data );
-                setGame( data );
+                setError ( new Error( 'Server Error..!' ) );
             }
+
+            setError( null );
+            console.log( response );
+            setGame( response );
              
         } catch ( error ) {
-            console.log( 'Something went wrong ' + error );
-            handleError();
-            
+            setError( error.message );
+        } finally {
+            setLoading( false );
         }
         
       } 
@@ -67,7 +63,7 @@ export default function PostMatches ( { match = "Arsenal vs Chelsea" } ) {
                     <p><b>Venue: { game.event[0].strVenue } | Match Date: { game.event[0].dateEvent }</b></p>
                     <p><b>Status: { game.event[0].strStatus }</b></p>
                 </footer>
-                { !( game.event[0].strVideo === ( '' || null ) ) && 
+                { !( game.event[0].strVideo === '' ) && 
                 <button><a href={ game.event[0].strVideo } >
                     Highlights
                 </a></button>}
@@ -75,13 +71,16 @@ export default function PostMatches ( { match = "Arsenal vs Chelsea" } ) {
         </>)
     }
 
-    return(<>
-        { error && 
-        <div>
-            <h2>Ooops... Failed to fetch data</h2>
-            <h3><Link to='/' onClick={ handleError }>Click here to go back</Link></h3>
+    if ( error ) {
+        return (<>
+            <h2>{ error }</h2>
+            <h3><Link to='/' onClick={ ()=> setError( null ) }>Click here to go back</Link></h3>
+        </>)
+    }
 
-        </div>}
-    </>)
-
+    if ( loading ) {
+        return (<>
+            <h2>Match Loading... </h2>
+        </>)
+    }
 }
